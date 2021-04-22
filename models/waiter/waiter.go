@@ -10,6 +10,6 @@ type Waiter struct {
 	FirstName string
 	LastName  string
 	Email     string
-	Password  string
+	Password  string //raw password is just for example it should be hashed
 	Orders    []order.Order
 }

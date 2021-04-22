@@ -15,11 +15,13 @@ Please, send us a link to your code, with instructions to run and any additional
 
 
 TODO:
- - add requests validator
- - add login endpoint
- - add orderItems endpoints
- - add bills endpoint
-
+- add requests validator
+- add login endpoint
+- add orderItems endpoints
+- add guest endpoints
+- orders endpoints
+- add bills endpoint
+- add websocket to notify waiters
 
 Postman link:
 https://www.getpostman.com/collections/8248743553b09c960a2d

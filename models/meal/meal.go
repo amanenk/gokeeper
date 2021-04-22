@@ -5,5 +5,5 @@ import "gorm.io/gorm"
 type Meal struct {
 	gorm.Model
 	Name  string
-	Price int
+	Price uint //price in cents
 }
