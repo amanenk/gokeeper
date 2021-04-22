@@ -7,15 +7,16 @@ import (
 )
 
 const (
-	OrderStatusStarted  = "STARTED"
-	OrderStatusCanceled = "Canceled"
-	OrderStatusFinished = "Finished"
+	StatusStarted  = "STARTED"
+	StatusCanceled = "CANCELED"
+	StatusFinished = "FINISHED"
 )
 
 type Order struct {
 	gorm.Model
 	FinishedAt time.Time
-	WaiterID   uint
-	TableID    uint
+	Status     string `validate:"required" json:"status"`
+	WaiterID   uint   `validate:"required" json:"waiterId"`
+	TableID    uint   `validate:"required" json:"tableId"`
 	Guests     []guest.Guest
 }

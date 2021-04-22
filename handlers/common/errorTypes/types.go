@@ -19,3 +19,11 @@ func NewBadRequestError(message string) ApiError {
 func NewForbiddenError() ApiError {
 	return ApiError{http.StatusForbidden, "forbidden 403", ""}
 }
+
+func NewJSONParseError() ApiError {
+	return ApiError{http.StatusBadRequest, "failed to parse JSON", ""}
+}
+
+func NewInternalServerError() ApiError {
+	return ApiError{http.StatusInternalServerError, "internal server error", ""}
+}

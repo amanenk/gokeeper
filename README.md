@@ -12,3 +12,14 @@ A system for the kitchen lets the server know when orders are ready. You do not 
  * Each guest makes an order for themself and a dish is ordered to share at the table
  * The group splits the order into 2 bills  
 Please, send us a link to your code, with instructions to run and any additional documents you find relevant.
+
+
+TODO:
+ - add requests validator
+ - add login endpoint
+ - add orderItems endpoints
+ - add bills endpoint
+
+
+Postman link:
+https://www.getpostman.com/collections/8248743553b09c960a2d

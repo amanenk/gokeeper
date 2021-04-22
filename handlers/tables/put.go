@@ -6,7 +6,9 @@ import (
 	"github.com/fdistorted/gokeeper/handlers/common/errorTypes"
 	"github.com/fdistorted/gokeeper/logger"
 	"github.com/fdistorted/gokeeper/models/table"
+	"github.com/fdistorted/gokeeper/validator"
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -20,19 +22,33 @@ func Put(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var table, dbTable table.Table
-	jsonError := common.UnmarshalRequestBody(r, &table)
-	if jsonError != nil {
-		common.SendError(w, errorTypes.NewNoFieldError("id"))
-		return
-	}
+	var table table.Table
 
-	tx := database.DB.Model(&dbTable).Where("id = ?", id).Updates(map[string]interface{}{"is_busy": table.IsBusy})
-
+	tx := database.Get().Find(&table, id)
 	if tx.Error != nil {
+		tx.Rollback()
 		common.HandleDatabaseError(w, tx.Error)
 		return
 	}
 
-	common.SendResponse(w, http.StatusOK, dbTable)
+	if jsonError := common.UnmarshalRequestBody(r, &table); jsonError != nil {
+		tx.Rollback()
+		common.SendError(w, *jsonError)
+		return
+	}
+
+	if err := validator.Get().Struct(&table); err != nil {
+		tx.Rollback()
+		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
+		common.HandleValidationError(w, err)
+		return
+	}
+
+	if err := database.Get().Save(&table).Error; err != nil {
+		tx.Rollback()
+		common.HandleDatabaseError(w, err)
+		return
+	}
+
+	common.SendResponse(w, http.StatusOK, table)
 }

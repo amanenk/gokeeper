@@ -19,17 +19,17 @@ func main() {
 		log.Fatalf("failed to load logger %+v\n", err)
 	}
 
-	database.InitDB(cfg) // todo use db object in handlers
+	database.Load(cfg) // todo use db object in handlers
 
 	// Create
-	database.DB.Create(&table.Table{Number: 1, Seats: 4, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 2, Seats: 4, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 3, Seats: 2, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 4, Seats: 2, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 5, Seats: 2, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 6, Seats: 2, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 7, Seats: 2, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 8, Seats: 2, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 9, Seats: 2, IsBusy: false})
-	database.DB.Create(&table.Table{Number: 10, Seats: 8, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 1, Seats: 4, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 2, Seats: 4, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 3, Seats: 2, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 4, Seats: 2, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 5, Seats: 2, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 6, Seats: 2, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 7, Seats: 2, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 8, Seats: 2, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 9, Seats: 2, IsBusy: false})
+	database.Get().Create(&table.Table{Number: 10, Seats: 8, IsBusy: false})
 }

@@ -8,6 +8,7 @@ import (
 	database "github.com/fdistorted/gokeeper/db"
 	"github.com/fdistorted/gokeeper/handlers"
 	"github.com/fdistorted/gokeeper/logger"
+	"github.com/fdistorted/gokeeper/validator"
 	"go.uber.org/zap"
 	"log"
 	"net/http"
@@ -31,10 +32,17 @@ func main() {
 		log.Fatalf("failed to load logger %+v\n", err)
 	}
 
+	err = validator.Load()
+	if err != nil {
+		logger.Get().Fatal("failed to load logger", zap.Error(err))
+	}
+
+	err = database.Load(cfg)
+	if err != nil {
+		logger.Get().Fatal("failed to load database", zap.Error(err))
+	}
+
 	addr := fmt.Sprintf(":%d", cfg.Port)
-
-	database.InitDB(cfg) // todo use db object in handlers
-
 	server := &http.Server{
 		Addr:    addr,
 		Handler: handlers.NewRouter(),
