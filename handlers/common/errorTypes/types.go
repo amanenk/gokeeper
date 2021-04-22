@@ -15,3 +15,7 @@ func NewNoFieldError(fieldName string) ApiError {
 func NewBadRequestError(message string) ApiError {
 	return ApiError{http.StatusBadRequest, message, ""}
 }
+
+func NewForbiddenError() ApiError {
+	return ApiError{http.StatusForbidden, "forbidden 403", ""}
+}
