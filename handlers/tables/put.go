@@ -6,9 +6,7 @@ import (
 	"github.com/fdistorted/gokeeper/handlers/common/errorTypes"
 	"github.com/fdistorted/gokeeper/logger"
 	"github.com/fdistorted/gokeeper/models/table"
-	"github.com/fdistorted/gokeeper/validator"
 	"github.com/gorilla/mux"
-	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -37,12 +35,12 @@ func Put(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := validator.Get().Struct(&table); err != nil {
-		tx.Rollback()
-		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
-		common.HandleValidationError(w, err)
-		return
-	}
+	//if err := validator.Get().Struct(&table); err != nil {
+	//	tx.Rollback()
+	//	logger.WithCtxValue(r.Context()).Error("data did not pass validation", zap.Error(err))
+	//	common.HandleValidationError(w, err)
+	//	return
+	//}
 
 	if err := database.Get().Save(&table).Error; err != nil {
 		tx.Rollback()
