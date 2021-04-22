@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/fdistorted/gokeeper/config"
 	database "github.com/fdistorted/gokeeper/db"
-	"github.com/fdistorted/gokeeper/logger"
 	"github.com/fdistorted/gokeeper/models/table"
+	"github.com/fdistorted/gokeeper/models/waiter"
 	"log"
 )
 
@@ -14,12 +14,11 @@ func main() {
 		log.Fatalf("failed to load config %+v\n", err)
 	}
 
-	err = logger.Load()
-	if err != nil {
-		log.Fatalf("failed to load logger %+v\n", err)
-	}
-
 	database.Load(cfg) // todo use db object in handlers
+
+	database.Get().Create(&waiter.Waiter{FirstName: "Anna", LastName: "Smith", Email: "anna.smith123@corp1.com", Password: "anna123"})
+	database.Get().Create(&waiter.Waiter{FirstName: "Jim", LastName: "Coracci", Email: "jim.c@corp1.com", Password: "jimc21111983"})
+	database.Get().Create(&waiter.Waiter{FirstName: "Dennis", LastName: "Pappalois", Email: "d.pappalois@corp1.com", Password: "qwerty1@3"})
 
 	// Create
 	database.Get().Create(&table.Table{Number: 1, Seats: 4, IsBusy: false})
