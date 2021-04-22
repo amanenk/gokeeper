@@ -4,6 +4,6 @@ import "gorm.io/gorm"
 
 type Meal struct {
 	gorm.Model
-	Name  string
-	Price uint //price in cents
+	Name  string `json:"name"`
+	Price uint   `json:"price"` //price in cents
 }

@@ -8,6 +8,8 @@ import (
 
 type Bill struct {
 	gorm.Model
-	OrderedMeals []ordered_meal.OrderedMeal
+	OrderedMeals []ordered_meal.OrderedMeal `json:"orderedMeals"`
+	Total        uint                       `json:"total"`
+	OrderID      uint
 	CreatedAt    time.Time
 }

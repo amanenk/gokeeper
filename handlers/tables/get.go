@@ -5,7 +5,7 @@ import (
 	"github.com/fdistorted/gokeeper/handlers/common"
 	"github.com/fdistorted/gokeeper/handlers/common/errorTypes"
 	"github.com/fdistorted/gokeeper/logger"
-	table "github.com/fdistorted/gokeeper/models/table"
+	"github.com/fdistorted/gokeeper/models/table"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
 	"net/http"

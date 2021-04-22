@@ -7,6 +7,6 @@ import (
 
 type Guest struct {
 	gorm.Model
-	orderedMeals []ordered_meal.OrderedMeal
-	OrderID      uint
+	OrderedMeals []ordered_meal.OrderedMeal `json:"orderedMeals"`
+	OrderID      uint                       `json:"-"`
 }
