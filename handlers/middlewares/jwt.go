@@ -4,9 +4,11 @@ import (
 	"github.com/fdistorted/gokeeper/handlers/common"
 	"github.com/fdistorted/gokeeper/handlers/common/errorTypes"
 	"github.com/fdistorted/gokeeper/handlers/middlewares/role"
+	"github.com/fdistorted/gokeeper/jwt"
 	"github.com/fdistorted/gokeeper/logger"
 	"go.uber.org/zap"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -16,17 +18,26 @@ const (
 func JWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			token := r.Header.Get(authorizationHeader)
-			logger.WithCtxValue(r.Context()).Debug("got token", zap.String("token", token))
-			//todo decode token and handle its roles
-			test := "admin" // todo take it from token
+			authHeader := r.Header.Get(authorizationHeader)
+			if authHeader == "" {
+				common.SendError(w, errorTypes.NewUnauthorized())
+				return
+			}
+			logger.WithCtxValue(r.Context()).Debug("got token", zap.String("token", authHeader))
+			tokenParts := strings.Split(authHeader, " ")
+			if len(tokenParts) != 2 {
+				common.SendError(w, errorTypes.NewUnauthorized())
+				return
+			}
+			claims, err := jwt.VerifyToken(tokenParts[1])
+			if err != nil {
+				common.SendError(w, errorTypes.NewUnauthorized())
+				return
+			}
 
 			allowedRoles := role.GetAllowedRoles(r.Context())
-
-			//logger.WithCtxValue(r.Context()).Debug("allowedRoles", zap.Strings("roles", allowedRoles))
-
 			for _, role := range allowedRoles {
-				if test == string(role) {
+				if claims.Audience == string(role) {
 					next.ServeHTTP(w, r)
 					return
 				}

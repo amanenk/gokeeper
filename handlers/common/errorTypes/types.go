@@ -27,3 +27,7 @@ func NewJSONParseError() ApiError {
 func NewInternalServerError() ApiError {
 	return ApiError{http.StatusInternalServerError, "internal server error", ""}
 }
+
+func NewUnauthorized() ApiError {
+	return ApiError{http.StatusUnauthorized, "unauthorized", ""}
+}

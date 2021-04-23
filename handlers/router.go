@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/fdistorted/gokeeper/handlers/login"
 	"github.com/fdistorted/gokeeper/handlers/middlewares"
 	"github.com/fdistorted/gokeeper/handlers/middlewares/role"
 	"github.com/fdistorted/gokeeper/handlers/orders"
@@ -16,12 +17,19 @@ func NewRouter() *mux.Router {
 
 	r.Use(middlewares.RequestID)
 
+	r.HandleFunc("/login", login.Post).Methods(http.MethodPost)
+
+	waiterRoleFilter := role.NewRoleFilter(role.Waiter)
 	tablesRouter := r.PathPrefix("/tables").Subrouter()
+	tablesRouter.Use(waiterRoleFilter.Attach)
+	tablesRouter.Use(middlewares.JWT)
 	tablesRouter.HandleFunc("/", tables.GetAll).Methods(http.MethodGet)
 	tablesRouter.HandleFunc("/{id}", tables.Get).Methods(http.MethodGet)
 	tablesRouter.HandleFunc("/{id}", tables.Put).Methods(http.MethodPut)
 
 	ordersRouter := r.PathPrefix("/orders").Subrouter()
+	ordersRouter.Use(waiterRoleFilter.Attach)
+	ordersRouter.Use(middlewares.JWT)
 	ordersRouter.HandleFunc("/", orders.GetAll).Methods(http.MethodGet)
 	ordersRouter.HandleFunc("/", orders.Post).Methods(http.MethodPost)
 	ordersRouter.HandleFunc("/", orders.GetAll).Methods(http.MethodGet)

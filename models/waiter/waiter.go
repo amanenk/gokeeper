@@ -9,7 +9,7 @@ type Waiter struct {
 	gorm.Model
 	FirstName string
 	LastName  string
-	Email     string
-	Password  string //raw password is just for example it should be hashed
+	Email     string `json:"email" validate:"required,email"`
+	Password  string `json:"password" validate:"required"` //raw password is just for example it should be hashed
 	Orders    []order.Order
 }
