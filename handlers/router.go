@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/fdistorted/gokeeper/handlers/guests"
 	"github.com/fdistorted/gokeeper/handlers/login"
 	"github.com/fdistorted/gokeeper/handlers/middlewares"
 	"github.com/fdistorted/gokeeper/handlers/middlewares/role"
@@ -32,8 +33,11 @@ func NewRouter() *mux.Router {
 	ordersRouter.Use(middlewares.JWT)
 	ordersRouter.HandleFunc("/", orders.GetAll).Methods(http.MethodGet)
 	ordersRouter.HandleFunc("/", orders.Post).Methods(http.MethodPost)
-	ordersRouter.HandleFunc("/", orders.GetAll).Methods(http.MethodGet)
-	ordersRouter.HandleFunc("/", orders.GetAll).Methods(http.MethodGet)
+
+	//host/orders/{orderid}/guests
+	guestsRouter := ordersRouter.PathPrefix("/{orderId}/guests").Subrouter()
+	guestsRouter.HandleFunc("/", guests.Post).Methods(http.MethodPost)
+	guestsRouter.HandleFunc("/{guestId}", guests.Delete).Methods(http.MethodDelete)
 
 	//will be used to trigger meals as ready
 	adminRouter := r.PathPrefix("/admin").Subrouter()

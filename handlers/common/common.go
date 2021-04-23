@@ -20,6 +20,10 @@ func SendResponse(w http.ResponseWriter, statusCode int, respBody interface{}) {
 	SendRawResponse(w, statusCode, binRespBody)
 }
 
+func SendOk(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusOK)
+}
+
 // SendRawResponse sends any raw ([]byte) response.
 func SendRawResponse(w http.ResponseWriter, statusCode int, binBody []byte) {
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")

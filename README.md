@@ -1,4 +1,5 @@
 # gokeeper
+
 simple api that helps to manage a caffe
 
 ### How to run it
@@ -29,8 +30,6 @@ You are creating an app to be used by servers (waiters/waitresses) at a restaura
 
 ### TODO:
 
-- add requests validator
-- add login endpoint
 - add orderItems endpoints
 - add guest endpoints
 - orders endpoints
