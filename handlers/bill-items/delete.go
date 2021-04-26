@@ -1,4 +1,4 @@
-package bills
+package bill_items
 
 import (
 	"github.com/fdistorted/gokeeper/handlers/common"
@@ -25,7 +25,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	//todo check if order is not billed yet
-	//todo remove all items from bill
+	//todo unattach item from guest
 
 	common.SendError(w, errorTypes.NewNotImplemented())
 }

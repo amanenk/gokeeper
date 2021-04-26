@@ -1,4 +1,4 @@
-package bills
+package guest_items
 
 import (
 	"github.com/fdistorted/gokeeper/handlers/common"
@@ -19,7 +19,8 @@ func Post(w http.ResponseWriter, r *http.Request) {
 
 	//create the
 	//todo check if order is not billed yet
-	//todo add empty bill to the order
+	//todo unattach item from previous bill
+	//todo attach item to a new bill
 
 	common.SendError(w, errorTypes.NewNotImplemented())
 }

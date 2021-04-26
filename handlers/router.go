@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"fmt"
+	bill_items "github.com/fdistorted/gokeeper/handlers/bill-items"
+	"github.com/fdistorted/gokeeper/handlers/bills"
 	"github.com/fdistorted/gokeeper/handlers/guests"
 	"github.com/fdistorted/gokeeper/handlers/login"
 	"github.com/fdistorted/gokeeper/handlers/meals"
@@ -58,13 +60,13 @@ func NewRouter() *mux.Router {
 
 	//host/orders/{orderid}/bills
 	orderBillsRouter := ordersRouter.PathPrefix("/{orderId}/bills").Subrouter()
-	orderBillsRouter.HandleFunc("/", guests.Post).Methods(http.MethodPost)
-	orderBillsRouter.HandleFunc("/{billId}", guests.Delete).Methods(http.MethodDelete)
+	orderBillsRouter.HandleFunc("/", bills.Post).Methods(http.MethodPost)
+	orderBillsRouter.HandleFunc("/{billId}", bills.Delete).Methods(http.MethodDelete)
 
 	//host/orders/{orderId}/bills/{billId}/order-items to manage bill ordered items
 	orderBillItemsRouter := orderBillsRouter.PathPrefix("/{orderId}/bills/{billId}").Subrouter()
-	orderBillItemsRouter.HandleFunc("/", guests.Post).Methods(http.MethodPost)
-	orderBillItemsRouter.HandleFunc("/", guests.Delete).Methods(http.MethodDelete)
+	orderBillItemsRouter.HandleFunc("/", bill_items.Post).Methods(http.MethodPost)
+	orderBillItemsRouter.HandleFunc("/", bill_items.Delete).Methods(http.MethodDelete)
 
 	//will be used to mark meals as ready
 	adminRouter := r.PathPrefix("/admin").Subrouter()
