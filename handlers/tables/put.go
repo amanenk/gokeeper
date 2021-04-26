@@ -13,7 +13,7 @@ import (
 //used to update busy status of the table
 func Put(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, ok := vars["id"]
+	id, ok := vars["tableId"]
 	if !ok {
 		logger.WithCtxValue(r.Context()).Error("missing id in request")
 		common.SendError(w, errorTypes.NewNoFieldError("id"))

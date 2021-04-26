@@ -12,10 +12,10 @@ const (
 
 type OrderedMeal struct {
 	gorm.Model
-	Status  string `json:"status"`
-	MealID  uint
-	Meal    meal.Meal `json:"meal"`
-	GuestID uint
-	BillID  uint
-	OrderId uint
+	Status  string    `json:"status"`
+	Meal    meal.Meal `json:"meal" validate"required"`
+	Amount  uint      `json:"amount"`
+	GuestID uint      `json:"guestId"`
+	BillID  uint      `json:"billID"`
+	OrderId uint      `json:"orderId"`
 }

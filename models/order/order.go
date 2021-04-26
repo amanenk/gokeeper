@@ -11,6 +11,7 @@ import (
 const (
 	StatusCreated  = "CREATED"
 	StatusCanceled = "CANCELED"
+	StatusBilled   = "BILLED"
 	StatusFinished = "FINISHED"
 )
 

@@ -30,6 +30,7 @@ You are creating an app to be used by servers (waiters/waitresses) at a restaura
 
 ### TODO:
 
+- add meals endpoint
 - add orderItems endpoints
 - add guest endpoints
 - orders endpoints
