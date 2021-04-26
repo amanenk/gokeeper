@@ -24,6 +24,8 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//todo check if order is owned by a waiter
+
 	var orderItemObj ordered_meal.OrderedMeal
 
 	if jsonError := common.UnmarshalRequestBody(r, &orderItemObj); jsonError != nil {
@@ -52,7 +54,6 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	orderItemObj.OrderId = uint(orderIdNumber)
 
 	tx := database.Get().Find(&orderItemObj.Meal, orderItemObj.Meal.ID)
-
 	if tx.Error != nil {
 		tx.Rollback()
 		if errors.Is(err, gorm.ErrRecordNotFound) {

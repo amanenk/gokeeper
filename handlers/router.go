@@ -50,7 +50,7 @@ func NewRouter() *mux.Router {
 	//host/orders/{orderid}/order-items
 	orderItemsRouter := ordersRouter.PathPrefix("/{orderId}/order-items").Subrouter()
 	orderItemsRouter.HandleFunc("/", order_Items.Post).Methods(http.MethodPost)
-	//orderItemsRouter.HandleFunc("/{mealId}", guests.Delete).Methods(http.MethodDelete)
+	orderItemsRouter.HandleFunc("/{orderedItemId}", guests.Delete).Methods(http.MethodDelete)
 
 	//host/orders/{orderid}/bills
 	orderBillsRouter := ordersRouter.PathPrefix("/{orderId}/bills").Subrouter()
