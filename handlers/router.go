@@ -21,7 +21,6 @@ func NewRouter() *mux.Router {
 	r.Use(middlewares.RequestID)
 
 	r.HandleFunc("/login", login.Post).Methods(http.MethodPost)
-
 	waiterRoleFilter := role.NewRoleFilter(role.Waiter)
 	mealsRouter := r.PathPrefix("/meals").Subrouter()
 	mealsRouter.Use(waiterRoleFilter.Attach)
@@ -47,6 +46,11 @@ func NewRouter() *mux.Router {
 	guestsRouter.HandleFunc("/", guests.Post).Methods(http.MethodPost)
 	guestsRouter.HandleFunc("/{guestId}", guests.Delete).Methods(http.MethodDelete)
 
+	//host/orders/{orderid}/guests/{billId}/order-items to manage guest ordered items
+	orderGuestItemsRouter := guestsRouter.PathPrefix("/{orderId}/guests/{guestId}").Subrouter()
+	orderGuestItemsRouter.HandleFunc("/", guests.Post).Methods(http.MethodPost)
+	orderGuestItemsRouter.HandleFunc("/", guests.Delete).Methods(http.MethodDelete)
+
 	//host/orders/{orderid}/order-items
 	orderItemsRouter := ordersRouter.PathPrefix("/{orderId}/order-items").Subrouter()
 	orderItemsRouter.HandleFunc("/", order_Items.Post).Methods(http.MethodPost)
@@ -56,6 +60,11 @@ func NewRouter() *mux.Router {
 	orderBillsRouter := ordersRouter.PathPrefix("/{orderId}/bills").Subrouter()
 	orderBillsRouter.HandleFunc("/", guests.Post).Methods(http.MethodPost)
 	orderBillsRouter.HandleFunc("/{billId}", guests.Delete).Methods(http.MethodDelete)
+
+	//host/orders/{orderId}/bills/{billId}/order-items to manage bill ordered items
+	orderBillItemsRouter := orderBillsRouter.PathPrefix("/{orderId}/bills/{billId}").Subrouter()
+	orderBillItemsRouter.HandleFunc("/", guests.Post).Methods(http.MethodPost)
+	orderBillItemsRouter.HandleFunc("/", guests.Delete).Methods(http.MethodDelete)
 
 	//will be used to mark meals as ready
 	adminRouter := r.PathPrefix("/admin").Subrouter()

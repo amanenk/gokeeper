@@ -27,6 +27,8 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// todo clear guest from all ordered meals
+
 	if err := database.Get().Where("order_id = ?", orderId).Delete(&guest.Guest{}, guestId).Error; err != nil {
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
 		common.HandleDatabaseError(w, err)

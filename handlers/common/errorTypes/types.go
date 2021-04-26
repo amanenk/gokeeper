@@ -31,3 +31,7 @@ func NewInternalServerError() ApiError {
 func NewUnauthorized() ApiError {
 	return ApiError{http.StatusUnauthorized, "unauthorized", ""}
 }
+
+func NewNotImplemented() ApiError {
+	return ApiError{http.StatusNotImplemented, "not implemented", ""}
+}
