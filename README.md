@@ -29,22 +29,22 @@ You are creating an app to be used by servers (waiters/waitresses) at a restaura
   Please, send us a link to your code, with instructions to run and any additional documents you find relevant.
 
 Basic flow:
- - a few guests come to the place
- - waiter checks the tables `GET http://localhost:3000/tables/?isBusy=false`  
- - waiter marks the table as busy `PUT http://localhost:3000/tables/2`  
- - waiter creates order assigned to a table`POST http://localhost:3000/orders/`
- - waiter adds guests to the order `POST http://localhost:3000/orders/2/guests/`  
- - waiter gets the list of available meals `GET http://localhost:3000/meals`
- - waiter adds ordered meal to order `POST http://localhost:3000/orders/2/order-items/`
- - waiter assigns an ordered meal to the guest `POST http://localhost:3000/orders/2/guests/6/order-items/5`
- - a guest leaves, waiter removes him from the order `DELETE http://localhost:3000/orders/2/guests/2/order-items/2`
- - when it is time to finish the order waiter creates the bill `POST http://localhost:3000/orders/2/bills/`  
- - and adds ordered items to a bill `POST http://localhost:3000/orders/2/bills/1/order-items/6`
- - waitier generates final bills for the order  `POST http://localhost:3000/orders/2/finish`
+
+- a few guests come to the place
+- waiter checks the tables `GET http://localhost:3000/tables/?isBusy=false`
+- waiter marks the table as busy `PUT http://localhost:3000/tables/2`
+- waiter creates order assigned to a table`POST http://localhost:3000/orders/`
+- waiter adds guests to the order `POST http://localhost:3000/orders/2/guests/`
+- waiter gets the list of available meals `GET http://localhost:3000/meals`
+- waiter adds ordered meal to order `POST http://localhost:3000/orders/2/order-items/`
+- waiter assigns an ordered meal to the guest `POST http://localhost:3000/orders/2/guests/6/order-items/5`
+- a guest leaves, waiter removes him from the order `DELETE http://localhost:3000/orders/2/guests/2/order-items/2`
+- when it is time to finish the order waiter creates the bill `POST http://localhost:3000/orders/2/bills/`
+- and adds ordered items to a bill `POST http://localhost:3000/orders/2/bills/1/order-items/6`
+- waitier generates final bills for the order  `POST http://localhost:3000/orders/2/finish`
 
 ### TODO:
 
 - use cache for waiters structure and for orders structure
-- add recoverer  
 - add websocket to notify waiters 
 

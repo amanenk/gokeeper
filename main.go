@@ -9,6 +9,7 @@ import (
 	"github.com/fdistorted/gokeeper/handlers"
 	"github.com/fdistorted/gokeeper/logger"
 	"github.com/fdistorted/gokeeper/validator"
+	handlers2 "github.com/gorilla/handlers"
 	"go.uber.org/zap"
 	"log"
 	"net/http"
@@ -45,7 +46,7 @@ func main() {
 	addr := fmt.Sprintf(":%d", cfg.Port)
 	server := &http.Server{
 		Addr:    addr,
-		Handler: handlers.NewRouter(),
+		Handler: handlers2.RecoveryHandler()(handlers.NewRouter()),
 	}
 
 	// Run our server in a goroutine so that it doesn't block.
