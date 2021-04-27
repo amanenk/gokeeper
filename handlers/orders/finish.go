@@ -38,6 +38,7 @@ func Finish(w http.ResponseWriter, r *http.Request) {
 	// todo mark order as billed
 	// todo check if all items are in bills
 	// todo check if there are no empty bills
+	// todo set finishedAt value
 	// return list of bills
 
 	common.SendError(w, errorTypes.NewNotImplemented())

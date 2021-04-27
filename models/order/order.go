@@ -1,11 +1,11 @@
 package order
 
 import (
+	"database/sql"
 	"github.com/fdistorted/gokeeper/models/bill"
 	"github.com/fdistorted/gokeeper/models/guest"
 	orderedmeal "github.com/fdistorted/gokeeper/models/ordered-meal"
 	"gorm.io/gorm"
-	"time"
 )
 
 const (
@@ -17,7 +17,7 @@ const (
 
 type Order struct {
 	gorm.Model
-	FinishedAt   *time.Time                `json:"finishedAt"`
+	FinishedAt   sql.NullTime              `json:"finishedAt"`
 	Status       string                    `json:"status"`
 	WaiterID     uint                      `validate:"required" json:"waiterId"`
 	TableID      uint                      `validate:"required" json:"tableId"`

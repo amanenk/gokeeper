@@ -1,6 +1,8 @@
 package jwt
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"time"
@@ -8,6 +10,7 @@ import (
 
 const (
 	signingString = "testq2eqsd8f76sad8f7a6s dfasudyftr" //todo use value from config
+	userIDKey     = "jwt-user-id"
 )
 
 func NewToken(userId, userRole string) (string, error) {
@@ -35,7 +38,7 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 
 	//todo work on messages below
 	if token.Valid {
-		fmt.Println("You look nice today")
+		fmt.Println("valid token")
 		return &claims, nil
 	} else if ve, ok := err.(*jwt.ValidationError); ok {
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
@@ -51,5 +54,17 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 		fmt.Println("Couldn't handle this token:", err)
 		return nil, err
 	}
+}
 
+func AttachUserIdToContext(ctx context.Context, userId uint) context.Context {
+	return context.WithValue(ctx, userIDKey, userId)
+}
+
+func GetUserId(ctx context.Context) (uint, error) {
+	value, ok := ctx.Value(userIDKey).(uint)
+	if !ok {
+		return 0, errors.New("failed to get user id")
+	}
+
+	return value, nil
 }

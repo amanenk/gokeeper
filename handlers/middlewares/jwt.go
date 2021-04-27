@@ -8,6 +8,7 @@ import (
 	"github.com/fdistorted/gokeeper/logger"
 	"go.uber.org/zap"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -35,10 +36,17 @@ func JWT(next http.Handler) http.Handler {
 				return
 			}
 
+			userId, err := strconv.ParseUint(claims.Subject, 10, 32)
+			if err != nil {
+				logger.WithCtxValue(r.Context()).Error("failed to get user id from claims")
+				common.SendError(w, errorTypes.NewUnauthorized())
+				return
+			}
+
 			allowedRoles := role.GetAllowedRoles(r.Context())
 			for _, role := range allowedRoles {
 				if claims.Audience == string(role) {
-					next.ServeHTTP(w, r)
+					next.ServeHTTP(w, r.WithContext(jwt.AttachUserIdToContext(r.Context(), uint(userId))))
 					return
 				}
 			}

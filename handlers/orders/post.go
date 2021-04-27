@@ -21,7 +21,6 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	//set initial values
 	orderObj.WaiterID = 1 // todo retrieve waiterId from context
 	orderObj.Status = order.StatusCreated
-	orderObj.FinishedAt = nil
 	orderObj.Guests = append(orderObj.Guests, guest.Guest{})
 
 	if err := validator.Get().Struct(&orderObj); err != nil {
