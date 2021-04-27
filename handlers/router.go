@@ -50,8 +50,8 @@ func NewRouter() *mux.Router {
 
 	//host/orders/{orderid}/guests/{billId}/order-items to manage guest ordered items
 	orderGuestItemsRouter := guestsRouter.PathPrefix("/{orderId}/guests/{guestId}").Subrouter()
-	orderGuestItemsRouter.HandleFunc("/", guests.Post).Methods(http.MethodPost)
-	orderGuestItemsRouter.HandleFunc("/", guests.Delete).Methods(http.MethodDelete)
+	orderGuestItemsRouter.HandleFunc("/{orderedItemId}", guests.Post).Methods(http.MethodPost)
+	orderGuestItemsRouter.HandleFunc("/{orderedItemId}", guests.Delete).Methods(http.MethodDelete)
 
 	//host/orders/{orderid}/order-items
 	orderItemsRouter := ordersRouter.PathPrefix("/{orderId}/order-items").Subrouter()
@@ -65,8 +65,8 @@ func NewRouter() *mux.Router {
 
 	//host/orders/{orderId}/bills/{billId}/order-items to manage bill ordered items
 	orderBillItemsRouter := orderBillsRouter.PathPrefix("/{orderId}/bills/{billId}").Subrouter()
-	orderBillItemsRouter.HandleFunc("/", bill_items.Post).Methods(http.MethodPost)
-	orderBillItemsRouter.HandleFunc("/", bill_items.Delete).Methods(http.MethodDelete)
+	orderBillItemsRouter.HandleFunc("/{orderedItemId}", bill_items.Post).Methods(http.MethodPost)
+	orderBillItemsRouter.HandleFunc("/{orderedItemId}", bill_items.Delete).Methods(http.MethodDelete)
 
 	//will be used to mark meals as ready
 	adminRouter := r.PathPrefix("/admin").Subrouter()

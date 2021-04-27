@@ -31,7 +31,7 @@ You are creating an app to be used by servers (waiters/waitresses) at a restaura
 ### TODO:
 
 - add guest items
-- add bill items
+- test bill items
 - add guest endpoints
 - orders endpoints
 - add bills endpoint
