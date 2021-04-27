@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	signingString = "testq2eqsd8f76sad8f7a6s dfasudyftr" //todo use value from config
+	signingString = "testq2eqsd8f76sad8f7a6s dfasudyftr"
 	userIDKey     = "jwt-user-id"
 )
 

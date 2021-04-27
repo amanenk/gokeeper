@@ -1,4 +1,4 @@
-package order_Items
+package bill_items
 
 import (
 	database "github.com/fdistorted/gokeeper/db"
@@ -13,14 +13,10 @@ import (
 
 func Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	orderId, ok := vars["orderId"]
-	if !ok {
-		logger.Get().Error("missing parameter")
-		common.SendError(w, errorTypes.NewNoFieldError("orderId"))
-		return
+	_, err := common.GetOrderEditableByWaiter(w, r)
+	if err != nil {
+		logger.WithCtxValue(r.Context()).Error("problems getting users order", zap.Error(err))
 	}
-
-	//todo check if order is owned by a waiter
 
 	orderedItemId, ok := vars["orderedItemId"]
 	if !ok {
@@ -29,20 +25,23 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var orderedItemObj ordered_meal.OrderedMeal
-	tx := database.Get().Find(&orderedItemObj, orderedItemId)
-	if tx.Error != nil {
-		tx.Rollback()
-		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
-		common.HandleDatabaseError(w, tx.Error)
+	billId, ok := vars["billId"]
+	if !ok {
+		logger.Get().Error("missing parameter")
+		common.SendError(w, errorTypes.NewNoFieldError("billId"))
 		return
 	}
 
-	if orderedItemObj.Status != ordered_meal.MealOrdered {
-		common.SendError(w, errorTypes.NewBadRequestError("meal cant be removed already"))
+	var orderedMealObj ordered_meal.OrderedMeal
+	if err := database.Get().Where("bill_id = ?", billId).First(&orderedMealObj, orderedItemId).Error; err != nil {
+		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
+		common.HandleDatabaseError(w, err)
+		return
 	}
 
-	if err := database.Get().Where("order_id = ?", orderId).Delete(&orderedItemObj).Error; err != nil {
+	orderedMealObj.BillID = nil
+
+	if err := database.Get().Save(orderedMealObj).Error; err != nil {
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
 		common.HandleDatabaseError(w, err)
 		return

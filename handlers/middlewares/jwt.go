@@ -19,6 +19,11 @@ const (
 func JWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == http.MethodOptions {
+				next.ServeHTTP(w, r)
+				return
+			}
+
 			authHeader := r.Header.Get(authorizationHeader)
 			if authHeader == "" {
 				common.SendError(w, errorTypes.NewUnauthorized())

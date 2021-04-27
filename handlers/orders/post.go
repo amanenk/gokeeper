@@ -3,6 +3,8 @@ package orders
 import (
 	database "github.com/fdistorted/gokeeper/db"
 	"github.com/fdistorted/gokeeper/handlers/common"
+	"github.com/fdistorted/gokeeper/handlers/common/errorTypes"
+	"github.com/fdistorted/gokeeper/jwt"
 	"github.com/fdistorted/gokeeper/logger"
 	"github.com/fdistorted/gokeeper/models/guest"
 	"github.com/fdistorted/gokeeper/models/order"
@@ -18,8 +20,14 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	waiterId, err := jwt.GetUserId(r.Context())
+	if err != nil {
+		logger.WithCtxValue(r.Context()).Error("failed to get waiterId")
+		common.SendError(w, errorTypes.NewUnauthorized())
+	}
+
 	//set initial values
-	orderObj.WaiterID = 1 // todo retrieve waiterId from context
+	orderObj.WaiterID = waiterId
 	orderObj.Status = order.StatusCreated
 	orderObj.Guests = append(orderObj.Guests, guest.Guest{})
 

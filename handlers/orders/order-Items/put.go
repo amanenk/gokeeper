@@ -7,19 +7,18 @@ import (
 	"github.com/fdistorted/gokeeper/logger"
 	ordered_meal "github.com/fdistorted/gokeeper/models/ordered-meal"
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 	"net/http"
 )
 
 //used to update busy status of the table
 func Put(w http.ResponseWriter, r *http.Request) {
-
+	// todo implement it if necessary
 	vars := mux.Vars(r)
-	//orderId, ok := vars["orderId"] //todo check if order is owned by a waiter
-	//if !ok {
-	//	logger.Get().Error("missing parameter")
-	//	common.SendError(w, errorTypes.NewNoFieldError("orderId"))
-	//	return
-	//}
+	_, err := common.GetOrderEditableByWaiter(w, r)
+	if err != nil {
+		logger.WithCtxValue(r.Context()).Error("problems getting users order", zap.Error(err))
+	}
 
 	orderedItemId, ok := vars["orderedItemId"]
 	if !ok {

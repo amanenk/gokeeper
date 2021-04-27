@@ -7,14 +7,15 @@ import (
 
 const (
 	MealOrdered = "ordered"
+	MealCooking = "cooking"
 	MealReady   = "ready"
 )
 
 type OrderedMeal struct {
 	gorm.Model
 	Status  string    `json:"status"`
-	MealID  uint      `json:"mealId"`
-	Meal    meal.Meal `json:"meal" validate"required"`
+	MealID  *uint     `json:"mealId"`
+	Meal    meal.Meal `json:"meal" validate:"required"`
 	Amount  uint      `json:"amount"`
 	GuestID *uint     `json:"guestId"`
 	BillID  *uint     `json:"billID"`

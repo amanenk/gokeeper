@@ -8,23 +8,16 @@ import (
 	"github.com/fdistorted/gokeeper/logger"
 	ordered_meal "github.com/fdistorted/gokeeper/models/ordered-meal"
 	"github.com/fdistorted/gokeeper/validator"
-	"github.com/gorilla/mux"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 )
 
 func Post(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	orderId, ok := vars["orderId"]
-	if !ok {
-		logger.Get().Error("missing parameter")
-		common.SendError(w, errorTypes.NewNoFieldError("id"))
-		return
+	orderObj, err := common.GetOrderEditableByWaiter(w, r)
+	if err != nil {
+		logger.WithCtxValue(r.Context()).Error("problems getting users order", zap.Error(err))
 	}
-
-	//todo check if order is owned by a waiter
 
 	var orderItemObj ordered_meal.OrderedMeal
 
@@ -39,32 +32,27 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderIdNumber, err := strconv.ParseUint(orderId, 10, 32)
-	if err != nil {
-		common.SendError(w, errorTypes.NewBadRequestError("orderId is not a number"))
-		return
-	}
-
 	if orderItemObj.Amount < 1 {
 		common.SendError(w, errorTypes.NewBadRequestError("wrong amount of meals ordered"))
 		return
 	}
 
-	orderItemObj.Status = ordered_meal.MealOrdered
-	orderItemObj.OrderId = uint(orderIdNumber)
-
-	tx := database.Get().Find(&orderItemObj.Meal, orderItemObj.Meal.ID)
+	tx := database.Get().First(&orderItemObj.Meal, orderItemObj.Meal.ID)
 	if tx.Error != nil {
 		tx.Rollback()
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			common.SendError(w, errorTypes.NewBadRequestError("ordered meal does not exist"))
+			return
 		}
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
 		common.HandleDatabaseError(w, tx.Error)
 		return
 	}
 
-	tx = database.Get().Create(orderItemObj)
+	orderItemObj.Status = ordered_meal.MealOrdered
+	orderObj.OrderedMeals = append(orderObj.OrderedMeals, orderItemObj)
+
+	tx = database.Get().Save(orderObj)
 	if tx.Error != nil {
 		tx.Rollback()
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
@@ -72,5 +60,5 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	common.SendResponse(w, http.StatusOK, orderItemObj)
+	common.SendResponse(w, http.StatusOK, orderObj.OrderedMeals[0])
 }

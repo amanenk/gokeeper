@@ -3,6 +3,8 @@ package orders
 import (
 	database "github.com/fdistorted/gokeeper/db"
 	"github.com/fdistorted/gokeeper/handlers/common"
+	"github.com/fdistorted/gokeeper/handlers/common/errorTypes"
+	"github.com/fdistorted/gokeeper/jwt"
 	"github.com/fdistorted/gokeeper/logger"
 	"github.com/fdistorted/gokeeper/models/order"
 	"go.uber.org/zap"
@@ -12,7 +14,11 @@ import (
 func GetAll(w http.ResponseWriter, r *http.Request) {
 	var orders []order.Order
 
-	waiterId := 1 //todo retrieve userId from context
+	waiterId, err := jwt.GetUserId(r.Context())
+	if err != nil {
+		logger.WithCtxValue(r.Context()).Error("failed to get waiterId")
+		common.SendError(w, errorTypes.NewUnauthorized())
+	}
 	chain := database.Get().Where("waiter_id = ?", waiterId)
 
 	status := r.URL.Query().Get("status")

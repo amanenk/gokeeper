@@ -15,7 +15,7 @@ func main() {
 		log.Fatalf("failed to load config %+v\n", err)
 	}
 
-	database.Load(cfg) // todo use db object in handlers
+	database.Load(cfg)
 
 	database.Get().Create(&waiter.Waiter{FirstName: "Anna", LastName: "Smith", Email: "anna.smith123@corp1.com", Password: "anna123"})
 	database.Get().Create(&waiter.Waiter{FirstName: "Jim", LastName: "Coracci", Email: "jim.c@corp1.com", Password: "jimc21111983"})

@@ -2,15 +2,16 @@ package handlers
 
 import (
 	"fmt"
-	bill_items "github.com/fdistorted/gokeeper/handlers/bill-items"
 	"github.com/fdistorted/gokeeper/handlers/bills"
+	bill_items "github.com/fdistorted/gokeeper/handlers/bills/bill-items"
 	"github.com/fdistorted/gokeeper/handlers/guests"
+	guest_items "github.com/fdistorted/gokeeper/handlers/guests/guest-items"
 	"github.com/fdistorted/gokeeper/handlers/login"
 	"github.com/fdistorted/gokeeper/handlers/meals"
 	"github.com/fdistorted/gokeeper/handlers/middlewares"
 	"github.com/fdistorted/gokeeper/handlers/middlewares/role"
-	order_Items "github.com/fdistorted/gokeeper/handlers/order-Items"
 	"github.com/fdistorted/gokeeper/handlers/orders"
+	order_Items "github.com/fdistorted/gokeeper/handlers/orders/order-Items"
 	"github.com/fdistorted/gokeeper/handlers/tables"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -23,6 +24,7 @@ func NewRouter() *mux.Router {
 	r.Use(middlewares.RequestID)
 
 	r.HandleFunc("/login", login.Post).Methods(http.MethodPost)
+
 	waiterRoleFilter := role.NewRoleFilter(role.Waiter)
 	mealsRouter := r.PathPrefix("/meals").Subrouter()
 	mealsRouter.Use(waiterRoleFilter.Attach)
@@ -50,13 +52,13 @@ func NewRouter() *mux.Router {
 
 	//host/orders/{orderid}/guests/{billId}/order-items to manage guest ordered items
 	orderGuestItemsRouter := guestsRouter.PathPrefix("/{orderId}/guests/{guestId}").Subrouter()
-	orderGuestItemsRouter.HandleFunc("/{orderedItemId}", guests.Post).Methods(http.MethodPost)
-	orderGuestItemsRouter.HandleFunc("/{orderedItemId}", guests.Delete).Methods(http.MethodDelete)
+	orderGuestItemsRouter.HandleFunc("/{orderedItemId}", guest_items.Post).Methods(http.MethodPost)
+	orderGuestItemsRouter.HandleFunc("/{orderedItemId}", guest_items.Delete).Methods(http.MethodDelete)
 
 	//host/orders/{orderid}/order-items
 	orderItemsRouter := ordersRouter.PathPrefix("/{orderId}/order-items").Subrouter()
 	orderItemsRouter.HandleFunc("/", order_Items.Post).Methods(http.MethodPost)
-	orderItemsRouter.HandleFunc("/{orderedItemId}", guests.Delete).Methods(http.MethodDelete)
+	orderItemsRouter.HandleFunc("/{orderedItemId}", order_Items.Delete).Methods(http.MethodDelete)
 
 	//host/orders/{orderid}/bills
 	orderBillsRouter := ordersRouter.PathPrefix("/{orderId}/bills").Subrouter()
@@ -64,7 +66,7 @@ func NewRouter() *mux.Router {
 	orderBillsRouter.HandleFunc("/{billId}", bills.Delete).Methods(http.MethodDelete)
 
 	//host/orders/{orderId}/bills/{billId}/order-items to manage bill ordered items
-	orderBillItemsRouter := orderBillsRouter.PathPrefix("/{orderId}/bills/{billId}").Subrouter()
+	orderBillItemsRouter := orderBillsRouter.PathPrefix("/{billId}/order-items").Subrouter()
 	orderBillItemsRouter.HandleFunc("/{orderedItemId}", bill_items.Post).Methods(http.MethodPost)
 	orderBillItemsRouter.HandleFunc("/{orderedItemId}", bill_items.Delete).Methods(http.MethodDelete)
 

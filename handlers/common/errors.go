@@ -9,11 +9,10 @@ import (
 
 func HandleDatabaseError(w http.ResponseWriter, err error) {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		//todo return error
-	} else {
-		//todo return error
+		SendError(w, errorTypes.NewDBNotFoundError())
+		return
 	}
-	SendError(w, errorTypes.NewInternalServerError())
+	SendError(w, errorTypes.NewDBGeneralError())
 }
 
 func HandleValidationError(w http.ResponseWriter, err error) {

@@ -30,6 +30,7 @@ You are creating an app to be used by servers (waiters/waitresses) at a restaura
 
 ### TODO:
 
+- use cache for waiters structure and for orders structure
 - add guest items
 - test bill items
 - add guest endpoints

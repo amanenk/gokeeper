@@ -35,3 +35,11 @@ func NewUnauthorized() ApiError {
 func NewNotImplemented() ApiError {
 	return ApiError{http.StatusNotImplemented, "not implemented", ""}
 }
+
+func NewDBGeneralError() ApiError {
+	return ApiError{http.StatusInsufficientStorage, "something wrong with the database", ""}
+}
+
+func NewDBNotFoundError() ApiError {
+	return ApiError{http.StatusNotFound, "item does not exist in database or you have not access to it", ""}
+}
