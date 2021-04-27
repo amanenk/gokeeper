@@ -51,7 +51,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	tx = tx.Delete(&guest.Guest{}, guestId)
+	tx = tx.Delete(guestObj)
 	if tx.Error != nil {
 		tx.Rollback()
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))

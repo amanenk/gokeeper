@@ -6,6 +6,7 @@ import (
 	"github.com/fdistorted/gokeeper/handlers/common/errorTypes"
 	"github.com/fdistorted/gokeeper/logger"
 	"github.com/fdistorted/gokeeper/models/bill"
+	ordered_meal "github.com/fdistorted/gokeeper/models/ordered-meal"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
 	"net/http"
@@ -16,7 +17,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	billId, ok := vars["billId"]
 	if !ok {
 		logger.Get().Error("missing parameter")
-		common.SendError(w, errorTypes.NewNoFieldError("orderId"))
+		common.SendError(w, errorTypes.NewNoFieldError("billId"))
 		return
 	}
 	orderObj, err := common.GetOrderEditableByWaiter(w, r)
@@ -24,8 +25,11 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		logger.WithCtxValue(r.Context()).Error("problems getting users order", zap.Error(err))
 	}
 
-	var bill bill.Bill
-	tx := database.Get().Preload("ordered_meals").First(bill, billId)
+	var billObj bill.Bill
+	tx := database.Get().
+		Preload("OrderedMeals").
+		Where("order_id = ?", orderObj.ID).
+		First(&billObj, billId)
 	if tx.Error != nil {
 		tx.Rollback()
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
@@ -33,8 +37,26 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	common.SendResponse(w, http.StatusOK, orderObj.Bills[0])
-	//todo remove all items from bill
+	for _, v := range billObj.OrderedMeals {
+		v.GuestID = nil
+		tx = database.Get().
+			Model(ordered_meal.OrderedMeal{}).
+			Where("bill_id = ?", billObj.ID).
+			Updates(map[string]interface{}{"bill_id": nil})
+		if tx.Error != nil {
+			tx.Rollback()
+			common.HandleDatabaseError(w, tx.Error)
+			return
+		}
+	}
 
-	common.SendError(w, errorTypes.NewNotImplemented())
+	tx = tx.Delete(&billObj)
+	if tx.Error != nil {
+		tx.Rollback()
+		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
+		common.HandleDatabaseError(w, tx.Error)
+		return
+	}
+
+	common.SendOk(w)
 }

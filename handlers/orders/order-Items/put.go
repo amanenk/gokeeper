@@ -11,9 +11,9 @@ import (
 	"net/http"
 )
 
+//todo implement or remove it
 //used to update busy status of the table
 func Put(w http.ResponseWriter, r *http.Request) {
-	// todo implement it if necessary
 	vars := mux.Vars(r)
 	_, err := common.GetOrderEditableByWaiter(w, r)
 	if err != nil {
