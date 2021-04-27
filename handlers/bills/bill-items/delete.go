@@ -40,7 +40,6 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	orderedMealObj.BillID = nil
-
 	if err := database.Get().Save(orderedMealObj).Error; err != nil {
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
 		common.HandleDatabaseError(w, err)
