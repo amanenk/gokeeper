@@ -51,7 +51,7 @@ func NewRouter() *mux.Router {
 	guestsRouter.HandleFunc("/{guestId}", guests.Delete).Methods(http.MethodDelete)
 
 	//host/orders/{orderid}/guests/{billId}/order-items to manage guest ordered items
-	orderGuestItemsRouter := guestsRouter.PathPrefix("/{orderId}/guests/{guestId}").Subrouter()
+	orderGuestItemsRouter := guestsRouter.PathPrefix("/{guestId}/order-items").Subrouter()
 	orderGuestItemsRouter.HandleFunc("/{orderedItemId}", guest_items.Post).Methods(http.MethodPost)
 	orderGuestItemsRouter.HandleFunc("/{orderedItemId}", guest_items.Delete).Methods(http.MethodDelete)
 
