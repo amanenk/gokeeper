@@ -46,5 +46,6 @@ Basic flow:
 ### TODO:
 
 - use cache for waiters structure and for orders structure
-- add websocket to notify waiters 
+- add websocket to notify waiters
+- propagate context usage to all database transactions
 
