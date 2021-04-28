@@ -19,16 +19,24 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 		logger.WithCtxValue(r.Context()).Error("failed to get waiterId")
 		common.SendError(w, errorTypes.NewUnauthorized())
 	}
-	chain := database.Get().Where("waiter_id = ?", waiterId)
+
+	chain := database.Get().Where("")
 
 	status := r.URL.Query().Get("status")
 	if status != "" { //TODO add validation to check if status is one of the available statuses before doing the query
 		chain.Where("status = ?", status)
 	}
 
-	if err := chain.Preload("Bills").Preload("OrderedMeals").Preload("Guests").Find(&orders).Error; err != nil {
-		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
-		common.HandleDatabaseError(w, err)
+	tx := chain.
+		Where("waiter_id = ?", waiterId).
+		WithContext(r.Context()).
+		Preload("Bills").
+		Preload("OrderedMeals").
+		Preload("Guests").
+		Find(&orders)
+	if tx.Error != nil {
+		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
+		common.HandleDatabaseError(w, tx.Error)
 		return
 	}
 

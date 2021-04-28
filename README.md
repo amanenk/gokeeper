@@ -4,6 +4,14 @@ simple api that helps to manage a caffe
 
 ### How to run it
 
+before testing you might want to fill the database with sample data:
+
+```
+go run ./utils/mock_db/main.go
+```
+
+Then you can run the app
+
 ```
 go run main.go
 ```

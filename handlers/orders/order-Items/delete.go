@@ -26,7 +26,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var orderedItemObj ordered_meal.OrderedMeal
-	tx := database.Get().Find(&orderedItemObj, orderedItemId)
+	tx := database.Get().WithContext(r.Context()).Find(&orderedItemObj, orderedItemId)
 	if tx.Error != nil {
 		tx.Rollback()
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
@@ -38,9 +38,11 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		common.SendError(w, errorTypes.NewBadRequestError("meal cant be removed already"))
 	}
 
-	if err := database.Get().Where("order_id = ?", orderObj.ID).Delete(&orderedItemObj).Error; err != nil {
-		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
-		common.HandleDatabaseError(w, err)
+	tx = tx.Where("order_id = ?", orderObj.ID).
+		Delete(&orderedItemObj)
+	if tx.Error != nil {
+		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
+		common.HandleDatabaseError(w, tx.Error)
 		return
 	}
 

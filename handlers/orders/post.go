@@ -37,7 +37,9 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tx := database.Get().Create(&orderObj)
+	tx := database.Get().
+		WithContext(r.Context()).
+		Create(&orderObj)
 	if tx.Error != nil {
 		tx.Rollback()
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))

@@ -32,13 +32,15 @@ func Finish(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var orderObj *order.Order
-	if err := database.Get().
+	tx := database.Get().
+		WithContext(r.Context()).
 		Preload("Bills.OrderedMeals.Meal").
 		Preload("OrderedMeals").
 		Where("waiter_id = ?", waiterId).
-		Find(&orderObj, orderId).Error; err != nil {
-		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
-		common.HandleDatabaseError(w, err)
+		Find(&orderObj, orderId)
+	if tx.Error != nil {
+		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
+		common.HandleDatabaseError(w, tx.Error)
 		return
 	}
 
@@ -70,7 +72,7 @@ func Finish(w http.ResponseWriter, r *http.Request) {
 	orderObj.Status = order.StatusBilled
 	orderObj.FinishedAt = sql.NullTime{Time: time.Now(), Valid: true}
 
-	tx := database.Get().Save(orderObj)
+	tx = tx.Save(orderObj)
 	if tx.Error != nil {
 		tx.Rollback()
 		common.HandleDatabaseError(w, tx.Error)

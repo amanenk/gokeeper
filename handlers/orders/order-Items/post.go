@@ -37,7 +37,9 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tx := database.Get().First(&orderItemObj.Meal, orderItemObj.Meal.ID)
+	tx := database.Get().
+		WithContext(r.Context()).
+		First(&orderItemObj.Meal, orderItemObj.Meal.ID)
 	if tx.Error != nil {
 		tx.Rollback()
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -52,7 +54,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	orderItemObj.Status = ordered_meal.MealOrdered
 	orderObj.OrderedMeals = append(orderObj.OrderedMeals, orderItemObj)
 
-	tx = database.Get().Save(orderObj)
+	tx = tx.Save(orderObj)
 	if tx.Error != nil {
 		tx.Rollback()
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
