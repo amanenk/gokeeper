@@ -28,6 +28,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 
 	var guestObj guest.Guest
 	tx := database.Get().
+		WithContext(r.Context()).
 		Preload("OrderedMeals").
 		Where("order_id = ?", orderObj.ID).
 		Find(&guestObj, guestId)

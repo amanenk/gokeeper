@@ -22,7 +22,9 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var orderObj order.Order
-	tx := database.Get().Find(&orderObj, orderId)
+	tx := database.Get().
+		WithContext(r.Context()).
+		Find(&orderObj, orderId)
 	if tx.Error != nil {
 		tx.Rollback()
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))

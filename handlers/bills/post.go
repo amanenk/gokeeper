@@ -17,7 +17,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 
 	var bill bill2.Bill
 	orderObj.Bills = append(orderObj.Bills, bill)
-	tx := database.Get().Save(orderObj)
+	tx := database.Get().WithContext(r.Context()).Save(orderObj)
 	if tx.Error != nil {
 		tx.Rollback()
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))

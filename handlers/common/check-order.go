@@ -30,7 +30,7 @@ func GetOrderEditableByWaiter(w http.ResponseWriter, r *http.Request) (*order.Or
 
 	//todo add some caching here
 	var orderObj *order.Order
-	if err := database.Get().Where("waiter_id = ?", waiterId).First(&orderObj, orderId).Error; err != nil {
+	if err := database.Get().WithContext(r.Context()).Where("waiter_id = ?", waiterId).First(&orderObj, orderId).Error; err != nil {
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
 		HandleDatabaseError(w, err)
 		return nil, errors.New("such a waiter does not have this orded")

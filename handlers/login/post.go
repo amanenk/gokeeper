@@ -28,7 +28,10 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tx := database.Get().Where("email = ?", waiterObj.Email).Find(&retrievedWaiter)
+	tx := database.Get().
+		WithContext(r.Context()).
+		Where("email = ?", waiterObj.Email).
+		Find(&retrievedWaiter)
 	if tx.Error != nil {
 		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
 		common.HandleDatabaseError(w, tx.Error)

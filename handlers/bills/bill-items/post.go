@@ -42,9 +42,10 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var orderedMealObj ordered_meal.OrderedMeal
-	if err := database.Get().First(&orderedMealObj, orderedItemId).Error; err != nil {
-		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
-		common.HandleDatabaseError(w, err)
+	tx := database.Get().WithContext(r.Context()).First(&orderedMealObj, orderedItemId)
+	if tx.Error != nil {
+		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
+		common.HandleDatabaseError(w, tx.Error)
 		return
 	}
 
@@ -52,9 +53,10 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	uintBillId := uint(uint64BillId)
 	orderedMealObj.BillID = &uintBillId
 
-	if err := database.Get().Save(orderedMealObj).Error; err != nil {
-		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(err))
-		common.HandleDatabaseError(w, err)
+	tx = database.Get().Save(orderedMealObj)
+	if tx.Error != nil {
+		logger.WithCtxValue(r.Context()).Error("database error", zap.Error(tx.Error))
+		common.HandleDatabaseError(w, tx.Error)
 		return
 	}
 
